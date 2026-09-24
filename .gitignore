@@ -1,0 +1,13 @@
+data/songs.json
+helo.cpp
+build/
+bin/
+obj/
+
+*.o
+*.obj
+*.exe
+
+.vscode/
+raylib/
+songs/
