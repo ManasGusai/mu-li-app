@@ -16,7 +16,7 @@ void write_to_json() {
     fs::path songs_dir = fs::current_path() / "song";
     std::cout << "Songs Directory: " <<songs_dir.filename().string();
 
-    int id = 1;
+    int id = 0;
     
     for(const auto& entry : fs::directory_iterator(songs_dir)) {
         if(!entry.is_regular_file())

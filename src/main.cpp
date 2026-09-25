@@ -7,7 +7,7 @@
 
 int main() {
 
-    //SetTraceLogLevel(LOG_NONE);
+    // SetTraceLogLevel(LOG_NONE);
     InitWindow(WIDTH, HEIGHT, "Musical");
 
     InitAudioDevice();
@@ -42,6 +42,8 @@ int main() {
         DrawTexturePro(m.get_current_song_texture(),{0,0, (float)m.get_current_song_texture().width,
             (float)m.get_current_song_texture().height},
             {0,0, WIDTH, HEIGHT},{0,0}, 0.0f, WHITE);
+
+        DrawText(m.get_current_song().c_str(), 10, 10, 20, WHITE);
 
         EndDrawing();
     }

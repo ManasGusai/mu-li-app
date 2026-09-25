@@ -7,9 +7,11 @@
 class MusicManager {
 private:
     std::vector<Music> songs;
-    int current_playing_song = 0;
-    std::unordered_map<int, Song> loaded_songs;
+    std::unordered_map<int, Song> song_data;
     TextureManager& texmanager;
+
+    int current_playing_song = 0;
+    int max_loaded_songs = 5;
 
     void load_songs();
 
@@ -24,9 +26,9 @@ public:
     void pause();
     void resume();
 
-    std::string get_current_song();
+    std::string get_current_song(); 
     Texture2D& get_current_song_texture() {
-        return  texmanager.get("cover/" + loaded_songs[current_playing_song + 1].icon);
+        return  texmanager.get("cover/" + song_data[current_playing_song].icon);
     }
 
     void print_songs_data();
