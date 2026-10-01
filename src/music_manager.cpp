@@ -46,12 +46,23 @@ void MusicManager::resume() {
     ResumeMusicStream(songs[current_playing_song]);
 }
 
+void MusicManager::calculate_neighbour_song_indexes() {
+    next_song_index = (current_playing_song + 1) % song_data.size();
+    last_song_index = (current_playing_song - 1 + song_data.size()) % song_data.size();
+
+    std::cout << "previous: " << last_song_index << std::endl;
+    std::cout << "current: " << current_playing_song << std::endl;
+    std::cout << "next: " << next_song_index << std::endl;
+}
+
 void MusicManager::next() {
     if(songs.empty()) {
         return;
     }
 
-    current_playing_song = (current_playing_song + 1) % songs.size();
+    current_playing_song = (current_playing_song + 1) % song_data.size();
+    calculate_neighbour_song_indexes();
+    load_neighbour_songs();
 
 }
 
@@ -60,29 +71,39 @@ void MusicManager::previous(){
         return;
     }
 
-    current_playing_song = (current_playing_song - 1 + songs.size()) % songs.size();
+    current_playing_song = (current_playing_song - 1 + song_data.size()) % song_data.size();
+    calculate_neighbour_song_indexes();
+    load_neighbour_songs();
+
 }
 
 std::string MusicManager::get_current_song() {
     return song_data[current_playing_song].title;
 }
 
+void MusicManager::load_neighbour_songs() {
+    std::string next = "song/" + song_data.at(next_song_index).title + ".mp3";
+    std::string last = "song/" + song_data.at(last_song_index).title + ".mp3";
+
+    Music n = LoadMusicStream(next.c_str());
+    if(n.stream.buffer == 0) {
+        throw std::runtime_error("Error Loading " + next);
+    }
+
+    Music l = LoadMusicStream(last.c_str());
+    if(n.stream.buffer == 0) {
+        throw std::runtime_error("Error Loading " + last);
+    }
+
+    songs.push_back(l);
+    songs.push_back(n);
+
+}
+
 void MusicManager::load_songs() {
     std::string path;
-    if(song_data.size() > 5){
-        for(size_t i = current_playing_song; i < static_cast<size_t>(max_loaded_songs) && i < song_data.size(); i++){
-            path = "song/" + song_data.at(i).title + ".mp3";
-            std::cout << path << "\n";
-            Music music = LoadMusicStream(path.c_str());
-            if(music.stream.buffer == 0) {
-                throw std::runtime_error("Error Loading " + path);
-            }
-
-            songs.push_back(music);
-        }
-    }
-    else {
-        for(size_t i = current_playing_song;i < song_data.size(); i++){
+    if(song_data.size() > 0){
+        for(size_t i = current_playing_song; i < 5 && i < song_data.size(); i++){
             path = "song/" + song_data.at(i).title + ".mp3";
             std::cout << path << "\n";
             Music music = LoadMusicStream(path.c_str());

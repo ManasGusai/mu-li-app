@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include "song.h"
 #include "texture_manager.hpp"
@@ -11,9 +12,12 @@ private:
     TextureManager& texmanager;
 
     int current_playing_song = 0;
-    int max_loaded_songs = 5;
+    int next_song_index;
+    int last_song_index;
 
     void load_songs();
+    void load_neighbour_songs();
+    void calculate_neighbour_song_indexes();
 
 public:
     MusicManager(TextureManager& tm) : texmanager(tm) {}
