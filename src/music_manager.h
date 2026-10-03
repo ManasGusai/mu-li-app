@@ -5,9 +5,22 @@
 #include "song.h"
 #include "texture_manager.hpp"
 
+enum class so {
+    prev = 0,
+    curr = 1,    
+    nxt = 2
+
+};
+
+struct loaded_songs {
+    int id;
+    Music m;
+    bool loaded = false;
+};
+
 class MusicManager {
 private:
-    std::vector<Music> songs;
+    std::array<loaded_songs, 3> songs;
     std::unordered_map<int, Song> song_data;
     TextureManager& texmanager;
 
@@ -16,12 +29,14 @@ private:
     int last_song_index;
 
     void load_songs();
-    void load_neighbour_songs();
+    void load_nxt_current_prev_songs();
+    void unload_nxt_and_prev_songs();
     void calculate_neighbour_song_indexes();
 
 public:
     MusicManager(TextureManager& tm) : texmanager(tm) {}
     void load();
+    void unload();
     void update();
     void next();
     void previous();

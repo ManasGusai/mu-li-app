@@ -48,6 +48,7 @@ int main() {
         EndDrawing();
     }
 
+    m.unload();
     CloseAudioDevice();
     CloseWindow();
 
