@@ -12,8 +12,8 @@ void MusicManager::play() {
         return;
     }
 
-    if(songs[static_cast<int>(so::curr)].loaded)
-        PlayMusicStream(songs[static_cast<int>(so::curr)].m);
+    if(songs[curr_index_in_loaded_songs].loaded)
+        PlayMusicStream(songs[curr_index_in_loaded_songs].m);
 }
 
 void MusicManager::update() {
@@ -21,8 +21,8 @@ void MusicManager::update() {
         return;
     }
 
-    if(songs[static_cast<int>(so::curr)].loaded)
-        UpdateMusicStream(songs[static_cast<int>(so::curr)].m);
+    if(songs[curr_index_in_loaded_songs].loaded)
+        UpdateMusicStream(songs[curr_index_in_loaded_songs].m);
 
 }
 
@@ -31,8 +31,8 @@ void MusicManager::pause() {
         return;
     }
 
-    if(songs[static_cast<int>(so::curr)].loaded)
-        PauseMusicStream(songs[static_cast<int>(so::curr)].m);
+    if(songs[curr_index_in_loaded_songs].loaded)
+        PauseMusicStream(songs[curr_index_in_loaded_songs].m);
 }
 
 void MusicManager::resume() {
@@ -40,17 +40,17 @@ void MusicManager::resume() {
         return;
     }
 
-    if(songs[static_cast<int>(so::curr)].loaded)
-        ResumeMusicStream(songs[static_cast<int>(so::curr)].m);
+    if(songs[curr_index_in_loaded_songs].loaded)
+        ResumeMusicStream(songs[curr_index_in_loaded_songs].m);
 }
 
 void MusicManager::calculate_neighbour_song_indexes() {
     next_song_index = (current_playing_song + 1) % song_data.size();
     last_song_index = (current_playing_song - 1 + song_data.size()) % song_data.size();
 
-    std::cout << "previous: " << last_song_index << std::endl;
-    std::cout << "current: " << current_playing_song << std::endl;
-    std::cout << "next: " << next_song_index << std::endl;
+    // std::cout << "previous: " << last_song_index << std::endl;
+    // std::cout << "current: " << current_playing_song << std::endl;
+    // std::cout << "next: " << next_song_index << std::endl;
 }
 
 void MusicManager::next() {
@@ -58,9 +58,25 @@ void MusicManager::next() {
         return;
     }
 
+    UnloadMusicStream(songs[prev_index_in_loaded_songs].m);
     current_playing_song = (current_playing_song + 1) % song_data.size();
     calculate_neighbour_song_indexes();
-    load_nxt_current_prev_songs();
+
+    std::string next = "song/" + song_data.at(next_song_index).title + ".mp3";
+
+    prev_index_in_loaded_songs = (prev_index_in_loaded_songs + 1) % songs.size();
+    curr_index_in_loaded_songs = (curr_index_in_loaded_songs + 1) % songs.size();
+    next_index_in_loaded_songs = (next_index_in_loaded_songs + 1) % songs.size();
+
+    songs[next_index_in_loaded_songs].id = song_data.at(next_song_index).id;
+
+    Music n = LoadMusicStream(next.c_str());
+    if(n.stream.buffer == 0) {
+        throw std::runtime_error("Error Loading " + next);
+    }
+
+    songs[next_index_in_loaded_songs].m = n;
+    songs[next_index_in_loaded_songs].loaded = true;
 
 }
 
@@ -69,9 +85,23 @@ void MusicManager::previous(){
         return;
     }
 
+    UnloadMusicStream(songs[next_index_in_loaded_songs].m);
     current_playing_song = (current_playing_song - 1 + song_data.size()) % song_data.size();
     calculate_neighbour_song_indexes();
-    load_nxt_current_prev_songs();
+
+    std::string prev = "song/" + song_data.at(last_song_index).title + ".mp3";
+    prev_index_in_loaded_songs = (prev_index_in_loaded_songs - 1 + songs.size()) % songs.size();
+    curr_index_in_loaded_songs = (curr_index_in_loaded_songs - 1 + songs.size()) % songs.size();
+    next_index_in_loaded_songs = (next_index_in_loaded_songs - 1 + songs.size()) % songs.size();
+
+    songs[prev_index_in_loaded_songs].id = song_data.at(last_song_index).id;
+    Music p = LoadMusicStream(prev.c_str());
+    if(p.stream.buffer == 0) {
+        throw std::runtime_error("Error Loading " + prev);
+    }
+
+    songs[prev_index_in_loaded_songs].m = p;
+    songs[prev_index_in_loaded_songs].loaded = true;
 
 }
 
@@ -79,71 +109,31 @@ std::string MusicManager::get_current_song() {
     return song_data[current_playing_song].title;
 }
 
-void MusicManager::load_nxt_current_prev_songs() {
-    std::string last = "song/" + song_data.at(last_song_index).title + ".mp3";
-    std::string current = "song/" + song_data.at(current_playing_song).title + ".mp3";
-    std::string next = "song/" + song_data.at(next_song_index).title + ".mp3";
-
-    songs[static_cast<int>(so::prev)].id = song_data.at(last_song_index).id;
-    songs[static_cast<int>(so::curr)].id = song_data.at(current_playing_song).id;
-    songs[static_cast<int>(so::nxt)].id = song_data.at(next_song_index).id;
-
-    Music n = LoadMusicStream(next.c_str());
-    if(n.stream.buffer == 0) {
-        throw std::runtime_error("Error Loading " + next);
-    }
-
-    Music c = LoadMusicStream(current.c_str());
-    if(c.stream.buffer == 0) {
-        throw std::runtime_error("Error Loading " + current);
-    }
-
-    Music l = LoadMusicStream(last.c_str());
-    if(l.stream.buffer == 0) {
-        throw std::runtime_error("Error Loading " + last);
-    }
-
-    songs[static_cast<int>(so::prev)].m = l;
-    songs[static_cast<int>(so::prev)].loaded = true;
-    
-    songs[static_cast<int>(so::curr)].m = c;
-    songs[static_cast<int>(so::curr)].loaded = true;
-    
-    songs[static_cast<int>(so::nxt)].m = l;
-    songs[static_cast<int>(so::curr)].loaded = true;
-
-}
-
-void MusicManager::unload_nxt_and_prev_songs() {
-    
-}
-
 void MusicManager::load_songs() {
     std::string path;
     path = "song/" + song_data[song_data.size() - 1].title + ".mp3";
-    songs[static_cast<int>(so::prev)].m = LoadMusicStream(path.c_str());
-    songs[static_cast<int>(so::prev)].id = song_data.size() - 1;
-    songs[static_cast<int>(so::prev)].loaded = true;
-    if(songs[static_cast<int>(so::prev)].m.stream.buffer == 0) {
+    songs[prev_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
+    songs[prev_index_in_loaded_songs].id = song_data.size() - 1;
+    songs[prev_index_in_loaded_songs].loaded = true;
+    if(songs[prev_index_in_loaded_songs].m.stream.buffer == 0) {
         throw std::runtime_error("Error Loading " + path);
     }
 
     path = "song/" + song_data.at(0).title + ".mp3";
-    songs[static_cast<int>(so::curr)].m = LoadMusicStream(path.c_str());
-    songs[static_cast<int>(so::curr)].id = current_playing_song;
-    songs[static_cast<int>(so::curr)].loaded = true;
-    if(songs[static_cast<int>(so::curr)].m.stream.buffer == 0) {
+    songs[curr_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
+    songs[curr_index_in_loaded_songs].id = current_playing_song;
+    songs[curr_index_in_loaded_songs].loaded = true;
+    if(songs[curr_index_in_loaded_songs].m.stream.buffer == 0) {
         throw std::runtime_error("Error Loading " + path);
     }
 
     path = "song/" + song_data[1].title + ".mp3";
-    songs[static_cast<int>(so::nxt)].m = LoadMusicStream(path.c_str());
-    songs[static_cast<int>(so::nxt)].id = current_playing_song + 1;
-    songs[static_cast<int>(so::nxt)].loaded = true;
-    if(songs[static_cast<int>(so::nxt)].m.stream.buffer == 0) {
+    songs[next_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
+    songs[next_index_in_loaded_songs].id = current_playing_song + 1;
+    songs[next_index_in_loaded_songs].loaded = true;
+    if(songs[next_index_in_loaded_songs].m.stream.buffer == 0) {
         throw std::runtime_error("Error Loading " + path);
     }
-
 
 }
 

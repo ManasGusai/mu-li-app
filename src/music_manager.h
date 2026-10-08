@@ -5,12 +5,7 @@
 #include "song.h"
 #include "texture_manager.hpp"
 
-enum class so {
-    prev = 0,
-    curr = 1,    
-    nxt = 2
-
-};
+#include <algorithm>
 
 struct loaded_songs {
     int id;
@@ -28,9 +23,11 @@ private:
     int next_song_index;
     int last_song_index;
 
+    int prev_index_in_loaded_songs = 0;
+    int curr_index_in_loaded_songs = 1;
+    int next_index_in_loaded_songs = 2;
+
     void load_songs();
-    void load_nxt_current_prev_songs();
-    void unload_nxt_and_prev_songs();
     void calculate_neighbour_song_indexes();
 
 public:
@@ -44,6 +41,19 @@ public:
     void play();
     void pause();
     void resume();
+
+    void skip(float time) const {
+        SeekMusicStream(songs[curr_index_in_loaded_songs].m, static_cast<int>(
+            std::clamp((song_currently_at() + time), 0.0f, total_song_duration() )));
+    }
+
+    float total_song_duration() const {
+        return GetMusicTimeLength(songs[curr_index_in_loaded_songs].m);
+    }
+
+    float song_currently_at() const {
+        return GetMusicTimePlayed(songs[curr_index_in_loaded_songs].m);
+    }
 
     std::string get_current_song(); 
     Texture2D& get_current_song_texture() {

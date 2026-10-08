@@ -36,6 +36,13 @@ int main() {
             m.play();
         }
 
+        if(IsKeyPressed(KEY_RIGHT)) {
+            m.skip(10.0f);
+        }
+        if(IsKeyPressed(KEY_LEFT)) {
+            m.skip(-10.0f);  
+        }
+
         BeginDrawing();
         ClearBackground(BLACK);
 
@@ -44,6 +51,15 @@ int main() {
             {0,0, WIDTH, HEIGHT},{0,0}, 0.0f, WHITE);
 
         DrawText(m.get_current_song().c_str(), 10, 10, 20, WHITE);
+
+        int curr_min   = (int)m.song_currently_at() / 60;
+        int curr_sec   = (int)m.song_currently_at() % 60;
+
+        int length_min = (int)m.total_song_duration() / 60;
+        int length_sec = (int)m.total_song_duration() % 60;
+
+        DrawText(TextFormat("%02d:%02d / %02d:%02d", curr_min, curr_sec, length_min,
+            length_sec), 30, 130, 30, WHITE);
 
         EndDrawing();
     }
