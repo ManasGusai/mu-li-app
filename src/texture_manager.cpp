@@ -20,3 +20,11 @@ Texture2D& TextureManager::get(const std::string& path) {
 
     return textures[path];
 }
+
+void TextureManager::unload()
+{
+    for(const auto& pair : textures)
+    {
+        UnloadTexture(pair.second);
+    }
+}

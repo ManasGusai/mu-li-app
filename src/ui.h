@@ -1,16 +1,20 @@
 #pragma once
 
 #include "button.h"
+#include "label.h"
 #include "music_manager.h"
 
 class UI {
 private:
     MusicManager& manager;
     Rectangle cover;
-public:
+
     Button nextButton;
     Button prevButton;
     Button pauseButton;
+
+    Label songLabel;
+public:
 
     UI(MusicManager& mm) : manager(mm)
     {
@@ -24,6 +28,13 @@ public:
         pauseButton.text = "pause"; 
 
         cover = {150.0f, 10.0f, 450.0f, 400.0f};
+
+        songLabel.setText(manager.get_current_song());
+        songLabel.setPosition({220
+        ,prevButton.rect.y - 80.0f});
+        songLabel.setFontSize(20);
+        songLabel.setColor(MAGENTA);
+        songLabel.enableSliding(28, 8, 0.25f);
     }
 
     void setup() {
@@ -50,6 +61,9 @@ public:
         nextButton.update(mouse);
         prevButton.update(mouse);
         pauseButton.update(mouse);
+
+        songLabel.setText(manager.get_current_song());
+        songLabel.update();
     }
 
     void draw() {
@@ -58,9 +72,10 @@ public:
             (float)manager.get_current_song_texture().height},
             cover,{0,0}, 0.0f, WHITE);
 
-        DrawText(manager.get_current_song().c_str(), prevButton.rect.x + prevButton.rect.width + 20.0f
-        ,prevButton.rect.y - 80.0f
-        , 20, WHITE);
+        songLabel.draw();
+        // DrawText(manager.get_current_song().c_str(), prevButton.rect.x + prevButton.rect.width + 20.0f
+        // ,prevButton.rect.y - 80.0f
+        // , 20, WHITE);
             
         nextButton.draw();
         prevButton.draw();

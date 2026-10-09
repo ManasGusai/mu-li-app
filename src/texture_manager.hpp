@@ -10,4 +10,5 @@ private:
 public:
     TextureManager();
     Texture2D& get(const std::string& path);
+    void unload();
 };

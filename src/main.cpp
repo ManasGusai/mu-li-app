@@ -49,6 +49,7 @@ int main() {
     }
 
     m.unload();
+    tex.unload();
     CloseAudioDevice();
     CloseWindow();
 
