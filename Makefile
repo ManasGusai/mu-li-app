@@ -5,7 +5,7 @@ LIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
 
 TARGET = muli.exe
 
-SRC = src/main.cpp src/music_manager.cpp src/texture_manager.cpp
+SRC = src/main.cpp src/music_manager.cpp src/texture_manager.cpp src/button.cpp
 
 all:
 	$(CXX) $(CXXFLAGS) $(SRC) $(LDFLAGS) $(LIBS) -o $(TARGET)

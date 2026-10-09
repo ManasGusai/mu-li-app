@@ -20,27 +20,24 @@ void MusicManager::update() {
     if(songs.empty()){
         return;
     }
+        
+    if(song_currently_at() >= total_song_duration() - 0.2f){
+        next();
+    }
 
     if(songs[curr_index_in_loaded_songs].loaded)
         UpdateMusicStream(songs[curr_index_in_loaded_songs].m);
 
 }
 
-void MusicManager::pause() {
+void MusicManager::pause_n_resume() {
     if(songs.empty()){
         return;
     }
 
-    if(songs[curr_index_in_loaded_songs].loaded)
+    if(IsMusicStreamPlaying(songs[curr_index_in_loaded_songs].m))
         PauseMusicStream(songs[curr_index_in_loaded_songs].m);
-}
-
-void MusicManager::resume() {
-    if(songs.empty()){
-        return;
-    }
-
-    if(songs[curr_index_in_loaded_songs].loaded)
+    else
         ResumeMusicStream(songs[curr_index_in_loaded_songs].m);
 }
 
@@ -57,6 +54,8 @@ void MusicManager::next() {
     if(songs.empty()) {
         return;
     }
+
+    StopMusicStream(songs[curr_index_in_loaded_songs].m);
 
     UnloadMusicStream(songs[prev_index_in_loaded_songs].m);
     current_playing_song = (current_playing_song + 1) % song_data.size();
@@ -78,12 +77,17 @@ void MusicManager::next() {
     songs[next_index_in_loaded_songs].m = n;
     songs[next_index_in_loaded_songs].loaded = true;
 
+    SeekMusicStream(songs[curr_index_in_loaded_songs].m, 0.0f);
+    play();
+
 }
 
 void MusicManager::previous(){
     if(songs.empty()) {
         return;
     }
+
+    StopMusicStream(songs[curr_index_in_loaded_songs].m);
 
     UnloadMusicStream(songs[next_index_in_loaded_songs].m);
     current_playing_song = (current_playing_song - 1 + song_data.size()) % song_data.size();
@@ -102,6 +106,9 @@ void MusicManager::previous(){
 
     songs[prev_index_in_loaded_songs].m = p;
     songs[prev_index_in_loaded_songs].loaded = true;
+
+    SeekMusicStream(songs[curr_index_in_loaded_songs].m, 0.0f);
+    play();
 
 }
 

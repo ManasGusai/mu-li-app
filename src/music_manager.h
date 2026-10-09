@@ -7,6 +7,11 @@
 
 #include <algorithm>
 
+enum class Song_modes {
+    LOOP,
+    SHUFFLE
+};
+
 struct loaded_songs {
     int id;
     Music m;
@@ -37,9 +42,9 @@ public:
     void update();
     void next();
     void previous();
-    
     void play();
-    void pause();
+    
+    void pause_n_resume();
     void resume();
 
     void skip(float time) const {
