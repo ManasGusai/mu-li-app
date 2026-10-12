@@ -21,8 +21,21 @@ void MusicManager::update() {
         return;
     }
         
-    if(song_currently_at() >= total_song_duration() - 0.2f){
-        next();
+    switch (mode)
+    {
+    case PLAYING_MODE::NORMAL:
+        if(song_currently_at() >= total_song_duration() - 0.2f) next();
+        break;
+    case PLAYING_MODE::LOOP:
+        
+        break;
+
+    case PLAYING_MODE::SHUFFLE:
+
+        break;
+    
+    default:
+        break;
     }
 
     if(songs[curr_index_in_loaded_songs].loaded)
@@ -30,15 +43,30 @@ void MusicManager::update() {
 
 }
 
-void MusicManager::pause_n_resume() {
+void MusicManager::pause()
+{
     if(songs.empty()){
         return;
     }
 
     if(IsMusicStreamPlaying(songs[curr_index_in_loaded_songs].m))
+    {
         PauseMusicStream(songs[curr_index_in_loaded_songs].m);
-    else
-        ResumeMusicStream(songs[curr_index_in_loaded_songs].m);
+        paused = true;
+    }
+}
+
+void MusicManager::resume()
+{
+    if(songs.empty()){
+        return;
+    }
+
+    if(!IsMusicStreamPlaying(songs[curr_index_in_loaded_songs].m))
+    {
+        ResumeMusicStream(songs[curr_index_in_loaded_songs].m);    
+        paused = false;
+    }
 }
 
 void MusicManager::calculate_neighbour_song_indexes() {

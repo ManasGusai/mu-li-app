@@ -23,7 +23,7 @@ int main() {
     m.play();
     //m.print_songs_data();
 
-    UI ui(m);
+    UI ui(m, tex);
     ui.setup();
     
     while(!WindowShouldClose()) {

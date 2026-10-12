@@ -1,7 +1,7 @@
 #include "texture_manager.hpp"
 
 TextureManager::TextureManager() {
-    textures["default"] = LoadTexture("cover/default.png");
+    textures["default"] = LoadTexture("images/cover/default.png");
 }
 
 Texture2D& TextureManager::get(const std::string& path) {
