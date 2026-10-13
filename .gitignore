@@ -3,6 +3,7 @@ helo.cpp
 build/
 bin/
 obj/
+k
 
 *.o
 *.obj
