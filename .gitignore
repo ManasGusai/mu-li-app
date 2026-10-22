@@ -1,5 +1,6 @@
 data/songs.json
 helo.cpp
+json_writer.cpp
 build/
 bin/
 obj/

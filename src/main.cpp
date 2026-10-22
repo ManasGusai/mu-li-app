@@ -1,7 +1,7 @@
 #include <raylib.h>
 #include <iostream>
 #include "music_manager.h"
-
+#include "library_json.h"
 #include "ui.h"
 
 #define WIDTH 800
@@ -16,6 +16,9 @@ int main() {
     if(!IsAudioDeviceReady()) {
         return 1;
     }
+
+    JLIB jl;
+    jl.initialize();
 
     TextureManager tex;
     MusicManager m(tex);
