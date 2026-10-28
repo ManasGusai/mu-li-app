@@ -32,4 +32,9 @@ public:
     {
         return total_songs;
     }
+
+    int number_of_playlists() const
+    {
+        return playlists.size();
+    }
 };

@@ -2,10 +2,40 @@
 #include <fstream>
 #include <stdexcept>
 #include "music_manager.h"
+#include "debug.h"
 #include "../third-party/json.hpp"
+#include <cstdlib> 
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
+
+MusicManager::MusicManager(TextureManager& tm) : texmanager(tm) {
+    mode = PLAYING_MODE::NORMAL;
+    jl.initialize();
+
+    for(int i = 0; i < jl.number_of_playlists(); i++)
+    {
+        if(!jl.get_playlist_data().empty()){
+            Playlist playlist;
+            playlist.name = jl.get_playlist_data()[i].name;
+            playlist.song_ids.resize(jl.get_playlist_data()[i].song_ids.size());
+            playlist.song_ids = jl.get_playlist_data()[i].song_ids;
+            playlist_data.push_back(playlist);
+        }
+    }
+}
+
+void MusicManager::play_song_at_index(int index)
+{
+    StopMusicStream(songs[curr_index_in_loaded_songs].m);
+
+    UnloadMusicStream(songs[prev_index_in_loaded_songs].m);
+    current_playing_song = index;
+    calculate_neighbour_song_indexes();
+
+    if(songs[curr_index_in_loaded_songs].loaded)
+        PlayMusicStream(songs[curr_index_in_loaded_songs].m);
+}
 
 void MusicManager::play() {
     if(songs.empty()){
@@ -181,7 +211,16 @@ void MusicManager::load() {
         song_data[i] = song;
     }
 
-    load_songs();
+    try{
+        load_songs();
+    }catch(const std::runtime_error& e)
+    {
+        std::cout << "Caught a runtime error: " << e.what() << std::endl; 
+        std::exit(EXIT_FAILURE); 
+    }
+
+    if(debug)
+        std::cout << "Initial Songs Loaded" <<std::endl;
 
 }
 
@@ -195,4 +234,18 @@ void MusicManager::print_songs_data() {
     for(const auto& [key, value] : song_data) {
         std::cout << key << ": " << value.artist << " " << value.id << " " << value.title << " " << value.path << "\n";
     }
+}
+
+void MusicManager::print_playlist_data()
+{
+    for (auto p : playlist_data)
+    {
+        std::cout << "PLAYLIST NAME: " << p.name << std::endl;
+        std::cout << "SONG IDs in " << p.name << std::endl;
+        for(size_t i = 0; i < p.song_ids.size(); i++){
+            std::cout << p.song_ids[i] << " ";
+        }
+        std::cout << "\n";
+    }
+    
 }

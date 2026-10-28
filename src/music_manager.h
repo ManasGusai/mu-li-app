@@ -3,6 +3,7 @@
 #include <array>
 #include <unordered_map>
 #include "song.h"
+#include "playlist.h"
 #include "texture_manager.hpp"
 #include "library_json.h"
 
@@ -26,6 +27,7 @@ private:
 
     std::array<loaded_songs, 3> songs;
     std::unordered_map<int, Song> song_data;
+    std::vector<Playlist> playlist_data;
     TextureManager& texmanager;
     PLAYING_MODE mode;
 
@@ -43,10 +45,8 @@ private:
     void calculate_neighbour_song_indexes();
 
 public:
-    MusicManager(TextureManager& tm) : texmanager(tm) {
-        mode = PLAYING_MODE::NORMAL;
-        jl.initialize();
-    }
+    MusicManager(TextureManager& tm);
+
     void load();
     void unload();
     void update();
@@ -55,6 +55,8 @@ public:
     void play();
     void pause();
     void resume();
+
+    void play_song_at_index(int index);
     
     void change_mode(PLAYING_MODE current_mode) {
         mode = current_mode;
@@ -82,10 +84,11 @@ public:
     bool song_paused() const { return paused; }
     void pause_song(bool flag) { paused = flag; }
 
-    std::string get_current_song(); 
     Texture2D& get_current_song_texture() {
         return  texmanager.get("images/cover/" + song_data[current_playing_song].icon);
     }
-
+    
+    std::string get_current_song(); 
     void print_songs_data();
+    void print_playlist_data();
 };

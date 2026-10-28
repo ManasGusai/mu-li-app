@@ -107,6 +107,7 @@ void JLIB::generate_song_metadata()
             song.id     = total_songs;
             song.icon   = "default";
             song.path   = songs_dir.string() + "/" + path.filename().string();
+            song.source = SongSource::Solo;
 
             if(debug)
                 std::cout << song.path << std::endl;
@@ -128,6 +129,7 @@ void JLIB::generate_song_metadata()
                 song.id     = total_songs;
                 song.icon   = "default";
                 song.path   = songs_dir.string() + "/" + playlists[i].name + "/" + path.filename().string();
+                song.source = SongSource::Playlist;
                 
                 song_data.push_back(song);
 

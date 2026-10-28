@@ -5,15 +5,16 @@ LIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
 
 TARGET = muli.exe
 
-SRC = src/main.cpp src/music_manager.cpp src/texture_manager.cpp src/button.cpp src/label.cpp src/library_json.cpp src/debug.cpp
+SRC = src/main.cpp src/music_manager.cpp src/texture_manager.cpp src/button.cpp src/label.cpp src/library_json.cpp src/debug.cpp src/ui.cpp
 
 debug:
 	$(CXX) $(CXXFLAGS) -DDEBUG $(SRC) $(LDFLAGS) $(LIBS) -o $(TARGET)
+
 release:
-	$(CXX) $(CXXFLAGS) $(SRC) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) $(SRC) $(LDFLAGS) $(LIBS) -mwindows -o $(TARGET)
 
 run: all
-		./$(TARGET)
+	./$(TARGET)
 
 clean:
-		rm -rf $(TARGET)
+	rm -rf $(TARGET)
