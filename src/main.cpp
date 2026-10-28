@@ -3,6 +3,7 @@
 #include "music_manager.h"
 #include "library_json.h"
 #include "ui.h"
+#include "debug.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -17,14 +18,13 @@ int main() {
         return 1;
     }
 
-    JLIB jl;
-    jl.initialize();
-
     TextureManager tex;
     MusicManager m(tex);
     m.load();
     m.play();
-    //m.print_songs_data();
+
+    if(debug)
+        m.print_songs_data();
 
     UI ui(m, tex);
     ui.setup();

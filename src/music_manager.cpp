@@ -89,7 +89,7 @@ void MusicManager::next() {
     current_playing_song = (current_playing_song + 1) % song_data.size();
     calculate_neighbour_song_indexes();
 
-    std::string next = "song/" + song_data.at(next_song_index).title + ".mp3";
+    std::string next = song_data.at(next_song_index).path;
 
     prev_index_in_loaded_songs = (prev_index_in_loaded_songs + 1) % songs.size();
     curr_index_in_loaded_songs = (curr_index_in_loaded_songs + 1) % songs.size();
@@ -121,7 +121,7 @@ void MusicManager::previous(){
     current_playing_song = (current_playing_song - 1 + song_data.size()) % song_data.size();
     calculate_neighbour_song_indexes();
 
-    std::string prev = "song/" + song_data.at(last_song_index).title + ".mp3";
+    std::string prev = song_data.at(last_song_index).path;
     prev_index_in_loaded_songs = (prev_index_in_loaded_songs - 1 + songs.size()) % songs.size();
     curr_index_in_loaded_songs = (curr_index_in_loaded_songs - 1 + songs.size()) % songs.size();
     next_index_in_loaded_songs = (next_index_in_loaded_songs - 1 + songs.size()) % songs.size();
@@ -146,7 +146,8 @@ std::string MusicManager::get_current_song() {
 
 void MusicManager::load_songs() {
     std::string path;
-    path = "song/" + song_data[song_data.size() - 1].title + ".mp3";
+    
+    path = song_data.at(song_data.size() - 1).path;       
     songs[prev_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
     songs[prev_index_in_loaded_songs].id = song_data.size() - 1;
     songs[prev_index_in_loaded_songs].loaded = true;
@@ -154,7 +155,7 @@ void MusicManager::load_songs() {
         throw std::runtime_error("Error Loading " + path);
     }
 
-    path = "song/" + song_data.at(0).title + ".mp3";
+    path = song_data.at(0).path;
     songs[curr_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
     songs[curr_index_in_loaded_songs].id = current_playing_song;
     songs[curr_index_in_loaded_songs].loaded = true;
@@ -162,7 +163,7 @@ void MusicManager::load_songs() {
         throw std::runtime_error("Error Loading " + path);
     }
 
-    path = "song/" + song_data[1].title + ".mp3";
+    path = song_data.at(1).path;
     songs[next_index_in_loaded_songs].m = LoadMusicStream(path.c_str());
     songs[next_index_in_loaded_songs].id = current_playing_song + 1;
     songs[next_index_in_loaded_songs].loaded = true;
@@ -173,34 +174,11 @@ void MusicManager::load_songs() {
 }
 
 void MusicManager::load() {
-    json data;
-    std::string path = "data/song.json";
-    std::ifstream file(path);
-    if(!file) {
-        std::cout << path << " does not found" <<"\n";
-    }
 
-    file >> data;
-
-    auto all_songs = data["songs"];
-
-    for(auto& s : all_songs) {
-        Song song;
-        if(s.contains("id"))
-            song.id     = s["id"];
-        if(s.contains("artist"))
-            song.artist = s["artist"];
-        if(s.contains("title")){
-            song.title  = s["title"];
-        }
-        if(s.contains("icon")) {
-            std::string icon_path = s["icon"].get<std::string>() + ".png";
-            song.icon = icon_path;
-        }
-
-        if(s.contains("id"))
-            song_data.emplace(s["id"].get<int>(), song);
-
+    for (int i = 0; i < jl.get_total_songs(); i++)
+    {
+        Song song = jl.get_song_data()[i];
+        song_data[i] = song;
     }
 
     load_songs();
@@ -215,6 +193,6 @@ void MusicManager::unload() {
 
 void MusicManager::print_songs_data() {
     for(const auto& [key, value] : song_data) {
-        std::cout << key << ": " << value.artist << " " << value.id << " " << value.title << "\n";
+        std::cout << key << ": " << value.artist << " " << value.id << " " << value.title << " " << value.path << "\n";
     }
 }

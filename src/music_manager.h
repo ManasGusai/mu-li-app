@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "song.h"
 #include "texture_manager.hpp"
+#include "library_json.h"
 
 #include <algorithm>
 
@@ -21,6 +22,8 @@ struct loaded_songs {
 
 class MusicManager {
 private:
+    JLIB jl;
+
     std::array<loaded_songs, 3> songs;
     std::unordered_map<int, Song> song_data;
     TextureManager& texmanager;
@@ -42,6 +45,7 @@ private:
 public:
     MusicManager(TextureManager& tm) : texmanager(tm) {
         mode = PLAYING_MODE::NORMAL;
+        jl.initialize();
     }
     void load();
     void unload();

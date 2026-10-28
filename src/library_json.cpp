@@ -2,8 +2,8 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-// #include "src/song.h"
 #include "../third-party/json.hpp"
+#include "debug.h"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
@@ -52,7 +52,8 @@ bool JLIB::is_playlist_changed()
 
         if(saved_names != current_names || data["total_songs"] != total_songs){
             return true;
-            std::cout << "INFO: CHANGES IN SONGS FOLDER" << std::endl;
+            if(debug)
+                std::cout << "INFO: CHANGES IN SONGS FOLDER" << std::endl;
         }
 
     }
@@ -66,7 +67,8 @@ void JLIB::check_playlists()
     data["songs"] = json::array();
 
     fs::path songs_dir = fs::current_path() / "song";
-    std::cout << "INFO: SONGS DIRECTORY: " <<songs_dir.filename().string() << std::endl;
+    if(debug)
+        std::cout << "INFO: SONGS DIRECTORY: " <<songs_dir.filename().string() << std::endl;
     
     std::vector<std::string> playist_names;
     for(const auto& entry : fs::directory_iterator(songs_dir)) {
@@ -106,7 +108,8 @@ void JLIB::generate_song_metadata()
             song.icon   = "default";
             song.path   = songs_dir.string() + "/" + path.filename().string();
 
-            std::cout << song.path << std::endl;
+            if(debug)
+                std::cout << song.path << std::endl;
             
             song_data.push_back(song);
             total_songs++;
@@ -135,7 +138,8 @@ void JLIB::generate_song_metadata()
         }
     }
 
-    std::cout << "INFO: GENERATED SONG NAMES:" << std::endl;
+    if(debug)
+        std::cout << "INFO: GENERATED SONG NAMES:" << std::endl;
 }
 
 void JLIB::make_global_json()
@@ -174,44 +178,9 @@ void JLIB::make_global_json()
     }
     file << data.dump(4);
 
-    std::cout << "INFO: REWROTE GLOBAL JSON" << std::endl;
+    if(debug)
+        std::cout << "INFO: REWROTE GLOBAL JSON" << std::endl;
 }
-
-// void JLIB::write_to_json() {
-//     json data;
-//     data["songs"] = json::array();
-
-//     fs::path songs_dir = fs::current_path() / "song";
-//     std::cout << "INFO: Songs Directory: " <<songs_dir.filename().string() << std::endl;
-
-//     int id = 0;
-    
-//     for(const auto& entry : fs::directory_iterator(songs_dir)) {
-//         if(!entry.is_regular_file())
-//             continue;
-        
-//         auto path = entry.path();
-
-//         if(path.extension() == ".mp3") {
-//             std::string name = path.stem().string();
-//             data["songs"].push_back({
-//                 {"id",     id},
-//                 {"artist", "Unknown"},
-//                 {"title",  name},
-//                 {"icon",   "default"}
-//             });
-//         }
-//         id++;
-//     }
-
-//     std::string json_path = "data/song.json";
-
-//     std::ofstream file(json_path);
-//     if(!file) {
-//         std::cout << "INFO: " << json_path << " does not found" <<"\n";
-//     }
-//     file << data.dump(4);
-// }
 
 void JLIB::print_playlists()
 {

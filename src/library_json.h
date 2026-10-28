@@ -10,7 +10,6 @@ private:
     int total_songs = 0;
 
     void generate_song_metadata();
-    void write_to_json();
     void check_playlists();
     void print_playlists();
     void make_global_json();
@@ -27,5 +26,10 @@ public:
 
     std::vector<Playlist> get_playlist_data() const {
         return playlists;
+    }
+
+    int get_total_songs() const 
+    {
+        return total_songs;
     }
 };
