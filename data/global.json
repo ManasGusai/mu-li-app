@@ -1,16 +1,71 @@
 {
-    "info": [
-        [
-            [
-                1,
-                "playlist1"
-            ]
-        ],
-        [
-            [
+    "Songs": [
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 0,
+            "path": "D:\\cpp\\mu-li-app\\song/the_mountain-earth-documentary-132365.mp3",
+            "title": "the_mountain-earth-documentary-132365"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 1,
+            "path": "D:\\cpp\\mu-li-app\\song/the_mountain-earth-science-141475.mp3",
+            "title": "the_mountain-earth-science-141475"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 2,
+            "path": "D:\\cpp\\mu-li-app\\song/playlist1/kissan4-wonders-of-the-earth-436615.mp3",
+            "title": "kissan4-wonders-of-the-earth-436615"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 3,
+            "path": "D:\\cpp\\mu-li-app\\song/playlist1/mickeyscat-moment-of-peace-mickeyscat-554494.mp3",
+            "title": "mickeyscat-moment-of-peace-mickeyscat-554494"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 4,
+            "path": "D:\\cpp\\mu-li-app\\song/playlist1/nadiacripps-the-magic-of-our-earth-514779.mp3",
+            "title": "nadiacripps-the-magic-of-our-earth-514779"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 5,
+            "path": "D:\\cpp\\mu-li-app\\song/playlist2/hitslab-earth-day-landscape-music-459479.mp3",
+            "title": "hitslab-earth-day-landscape-music-459479"
+        },
+        {
+            "artist": "unknown",
+            "icon": "default",
+            "id": 6,
+            "path": "D:\\cpp\\mu-li-app\\song/playlist2/jonasblakewood-earth-day-519888.mp3",
+            "title": "jonasblakewood-earth-day-519888"
+        }
+    ],
+    "playlists": [
+        {
+            "name": "playlist1",
+            "songids": [
                 2,
-                "playlist2"
+                3,
+                4
             ]
-        ]
-    ]
+        },
+        {
+            "name": "playlist2",
+            "songids": [
+                5,
+                6
+            ]
+        }
+    ],
+    "total_songs": 7
 }

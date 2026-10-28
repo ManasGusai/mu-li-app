@@ -9,7 +9,7 @@
 
 int main() {
 
-    // SetTraceLogLevel(LOG_NONE);
+    SetTraceLogLevel(LOG_NONE);
     InitWindow(WIDTH, HEIGHT, "Musical");
 
     InitAudioDevice();

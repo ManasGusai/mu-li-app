@@ -1,21 +1,31 @@
 #pragma once
 
-#include <vector>
-#include <string>
+#include "playlist.h"
+#include "song.h"
 
 class JLIB{
 private:
-    std::vector<std::string> playist_names;
+    std::vector<Playlist> playlists;
+    std::vector<Song> song_data;
+    int total_songs = 0;
 
+    void generate_song_metadata();
     void write_to_json();
+    void check_playlists();
     void print_playlists();
     void make_global_json();
     void make_json_for_playlists();
+    bool is_playlist_changed();
 
 public:
     JLIB();
     void initialize();
-    std::vector<std::string> get_playlist_names() const {
-        return playist_names;
+    std::vector<Song> get_song_data() const
+    {
+        return song_data;
+    }
+
+    std::vector<Playlist> get_playlist_data() const {
+        return playlists;
     }
 };

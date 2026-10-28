@@ -7,4 +7,5 @@ struct Song {
     std::string artist;
     std::string title;
     std::string icon;
+    std::string path;
 };
